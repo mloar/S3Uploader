@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3Uploader", "S3Uploader\S3Uploader.csproj", "{9F41A646-6401-4D37-86AB-7C4123E6A07E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F41A646-6401-4D37-86AB-7C4123E6A07E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F41A646-6401-4D37-86AB-7C4123E6A07E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F41A646-6401-4D37-86AB-7C4123E6A07E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F41A646-6401-4D37-86AB-7C4123E6A07E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
