@@ -48,7 +48,7 @@ namespace AWS_Console_App1
             public string BucketName;
             public string Key;
             public string UploadId;
-            public const long ChunkSize = 2 << 21;
+            public long ChunkSize;
             public int NumChunks;
             public long FileLength;
             public long FilePosition;
@@ -71,10 +71,18 @@ namespace AWS_Console_App1
                 }
                 FileLength = fi.Length;
 
-                NumChunks = (int)(FileLength / ChunkSize);
-                if (fi.Length % ChunkSize > 0)
+                // Amazon requires that each chunk be at least 5 MB
+                if (FileLength < 5 * (1 << 20))
                 {
-                    NumChunks++;
+                    ChunkSize = FileLength;
+                    NumChunks = 1;
+                }
+                else
+                {
+                    // Integer division results in truncation of result, so we end up
+                    // with the smallest ChunkSize > 5 MB.
+                    NumChunks = (int)(FileLength / (5 * (1 << 20)));
+                    ChunkSize = (long)Math.Floor((double)FileLength / NumChunks);
                 }
 
                 FilePosition = 0;
@@ -145,16 +153,23 @@ namespace AWS_Console_App1
                         .WithFilePath(us.FileName)
                         .WithFilePosition(us.FilePosition)
                         .WithPartNumber(us.PartNumber)
-                        .WithPartSize(UploadState.ChunkSize)
+                        .WithPartSize(us.FileLength - us.FilePosition > us.ChunkSize ? us.ChunkSize : us.FileLength - us.FilePosition)
                         .WithGenerateChecksum(true)
                         .WithKey(us.Key)
                         .WithUploadId(us.UploadId)
                         .WithSubscriber(new EventHandler<UploadPartProgressArgs>(Blah))
                         ;
 
-                        us.Responses.Insert(us.PartNumber - 1, new PartETag(us.PartNumber, s3Client.UploadPart(ureq).ETag));
+                        if (us.Responses.Count > us.PartNumber - 1)
+                        {
+                            us.Responses[us.PartNumber - 1] = new PartETag(us.PartNumber, s3Client.UploadPart(ureq).ETag);
+                        }
+                        else
+                        {
+                            us.Responses.Insert(us.PartNumber - 1, new PartETag(us.PartNumber, s3Client.UploadPart(ureq).ETag));
+                        }
                         us.PartNumber++;
-                        us.FilePosition += UploadState.ChunkSize;
+                        us.FilePosition += us.ChunkSize;
 
                         using (FileStream fs = new FileStream("upload.dat", FileMode.OpenOrCreate))
                         {
