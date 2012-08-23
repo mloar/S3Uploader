@@ -18,7 +18,7 @@ namespace AWS_Console_App1
 {
     public class Program
     {
-        static void Blah(object o, UploadPartProgressArgs args)
+        static void ShowProgress(object o, UploadPartProgressArgs args)
         {
             Console.CursorLeft = 0;
             StringBuilder sb = new StringBuilder();
@@ -157,7 +157,7 @@ namespace AWS_Console_App1
                         .WithGenerateChecksum(true)
                         .WithKey(us.Key)
                         .WithUploadId(us.UploadId)
-                        .WithSubscriber(new EventHandler<UploadPartProgressArgs>(Blah))
+                        .WithSubscriber(new EventHandler<UploadPartProgressArgs>(ShowProgress))
                         ;
 
                         if (us.Responses.Count > us.PartNumber - 1)
